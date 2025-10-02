@@ -1,0 +1,38 @@
+apply plugin: 'java'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'ivy-publish'
+
+group = 'com.jaxb-plugin'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:3.0.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:3.0.1")
+}
+
+gradlePlugin {
+    automatedPublishing = false
+    plugins {
+        jaxbPlugin {
+            id = 'com.jaxb-plugin'
+            implementationClass = 'com.plugin.JaxbPlugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        ivy(IvyPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        ivy {
+            url = file(System.getProperty('user.home') + '/.plugin-testing/.ivylocal')
+        }
+    }
+}
